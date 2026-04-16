@@ -25,12 +25,12 @@ export default async function LibraryPage() {
         {/* Hero */}
         <div className="mb-12">
           <h1
-            className="text-4xl md:text-5xl font-bold text-stone-900 dark:text-zinc-100 mb-3"
+            className="text-4xl md:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-3"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             Your Library
           </h1>
-          <p className="text-stone-500 dark:text-zinc-400 text-lg">
+          <p className="text-stone-500 dark:text-stone-400 text-lg">
             Beautiful books from Markdown &amp; MDX files.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default async function LibraryPage() {
         )}
       </main>
 
-      <footer className="border-t border-stone-200 dark:border-zinc-800 py-6 text-center text-sm text-stone-400 dark:text-zinc-600">
+      <footer className="border-t border-stone-200 dark:border-stone-800 py-6 text-center text-sm text-stone-400 dark:text-stone-600">
         MDBook — built with Next.js &amp; FastAPI
       </footer>
     </div>
@@ -67,15 +67,15 @@ function EmptyState() {
     <div className="text-center py-24">
       <p className="text-6xl mb-6 select-none">📚</p>
       <h2
-        className="text-2xl font-semibold text-stone-700 dark:text-zinc-300 mb-2"
+        className="text-2xl font-semibold text-stone-700 dark:text-stone-300 mb-2"
         style={{ fontFamily: "var(--font-serif)" }}
       >
         Your library is empty
       </h2>
-      <p className="text-stone-400 dark:text-zinc-500 mb-8">Upload your first book to get started.</p>
+      <p className="text-stone-400 dark:text-stone-500 mb-8">Upload your first book to get started.</p>
       <Link
         href="/create"
-        className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-lg font-medium hover:bg-stone-700 dark:hover:bg-zinc-300 transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg font-medium hover:bg-stone-700 dark:hover:bg-stone-300 transition-colors"
       >
         <span>+</span> Create your first book
       </Link>

@@ -32,7 +32,7 @@ export default function ThemeToggle() {
   const { theme, toggle, setTheme } = useTheme();
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg border border-stone-200 dark:border-zinc-700 bg-stone-100 dark:bg-zinc-800 p-0.5">
+    <div className="flex items-center gap-0.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 p-0.5">
       {(["light", "dark", "system"] as Theme[]).map((t) => (
         <button
           key={t}
@@ -41,8 +41,8 @@ export default function ThemeToggle() {
           aria-label={`Switch to ${LABELS[t]} theme`}
           className={`flex items-center justify-center w-7 h-7 rounded-md text-xs transition-all ${
             theme === t
-              ? "bg-white dark:bg-zinc-600 text-stone-800 dark:text-zinc-100 shadow-sm"
-              : "text-stone-400 dark:text-zinc-500 hover:text-stone-700 dark:hover:text-zinc-300"
+              ? "bg-white dark:bg-stone-600 text-stone-800 dark:text-stone-100 shadow-sm"
+              : "text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300"
           }`}
         >
           {ICONS[t]}

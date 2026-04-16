@@ -9,6 +9,9 @@ const inter = Inter({
   display: "swap",
 });
 
+// STIX Two Text — designed for scientific, technical & mathematical publishing
+// IBM Plex Mono — clean monospaced used widely in research/technical contexts
+
 export const metadata: Metadata = {
   title: "MDBook — Your Digital Library",
   description: "Upload and read books from Markdown and MDX files",
@@ -27,11 +30,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col bg-stone-50 dark:bg-zinc-950 text-stone-900 dark:text-zinc-100 antialiased transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 antialiased transition-colors duration-200">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

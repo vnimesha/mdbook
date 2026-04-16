@@ -28,7 +28,7 @@ export default function DeleteBookButton({ bookId }: { bookId: string }) {
         <div className="flex gap-2">
           <button
             onClick={() => setConfirming(false)}
-            className="flex-1 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-zinc-700 text-stone-600 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800"
+            className="flex-1 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
           >
             Cancel
           </button>
@@ -47,7 +47,7 @@ export default function DeleteBookButton({ bookId }: { bookId: string }) {
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="w-full py-2.5 text-sm rounded-xl border border-stone-200 dark:border-zinc-800 text-stone-500 dark:text-zinc-500 hover:border-red-200 dark:hover:border-red-900 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+      className="w-full py-2.5 text-sm rounded-xl border border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-500 hover:border-red-200 dark:hover:border-red-900 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
     >
       Delete Book
     </button>

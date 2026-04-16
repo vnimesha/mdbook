@@ -7,6 +7,7 @@ import rehypeHighlight from "rehype-highlight";
 import Link from "next/link";
 import type { ChapterMeta } from "@/lib/types";
 import ReaderProgress from "./ReaderProgress";
+import ReaderHeader from "./ReaderHeader";
 import ChapterNav from "./ChapterNav";
 
 export const dynamic = "force-dynamic";
@@ -39,74 +40,102 @@ export default async function ChapterPage({ params }: Props) {
     currentIndex < sortedChapters.length - 1 ? sortedChapters[currentIndex + 1] : null;
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-zinc-950 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-stone-950 flex flex-col">
       <ReaderProgress />
 
-      {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-stone-50/95 dark:bg-zinc-950/95 backdrop-blur-sm border-b border-stone-200 dark:border-zinc-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-4">
-          <Link
-            href={`/books/${bookId}`}
-            className="flex items-center gap-1.5 text-sm text-stone-500 dark:text-zinc-400 hover:text-stone-800 dark:hover:text-zinc-100 transition-colors shrink-0"
-          >
-            ← {book.title}
-          </Link>
-          <div className="flex-1 min-w-0 text-center">
-            <span className="text-sm text-stone-400 dark:text-zinc-500 truncate hidden sm:block">
-              {chapter.meta.title}
-            </span>
-          </div>
-          <span className="text-xs text-stone-400 dark:text-zinc-500 shrink-0">
-            Ch. {currentIndex + 1} / {sortedChapters.length}
-          </span>
-        </div>
-      </header>
+      <ReaderHeader
+        bookId={bookId}
+        bookTitle={book.title}
+        chapterTitle={chapter.meta.title}
+        currentIndex={currentIndex}
+        totalChapters={sortedChapters.length}
+      />
 
       <div className="flex-1 flex">
         {/* TOC sidebar */}
-        <aside className="hidden xl:block w-64 shrink-0 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto p-6 border-r border-stone-200 dark:border-zinc-800">
-          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 dark:text-zinc-500 mb-4">
-            Contents
-          </p>
+        <aside className="hidden xl:block w-64 shrink-0 sticky top-[3.625rem] h-[calc(100vh-3.625rem)] overflow-y-auto border-r border-stone-200 dark:border-stone-800">
+          <div className="p-5 pb-2">
+            <p
+              className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-stone-400 dark:text-stone-600 mb-3"
+              style={{ fontFamily: "var(--font-sans)" }}
+            >
+              Contents
+            </p>
+          </div>
           <nav>
-            <ol className="space-y-1">
-              {sortedChapters.map((c: ChapterMeta, i: number) => (
-                <li key={c.id}>
-                  <Link
-                    href={`/books/${bookId}/chapter/${c.id}`}
-                    className={`flex items-start gap-2 px-2 py-1.5 rounded-lg text-sm transition-colors ${
-                      c.id === chapterId
-                        ? "bg-stone-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-medium"
-                        : "text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100 hover:bg-stone-100 dark:hover:bg-zinc-800"
-                    }`}
-                  >
-                    <span className="shrink-0 text-xs mt-0.5 opacity-60">{i + 1}.</span>
-                    <span className="leading-snug">{c.title}</span>
-                  </Link>
-                </li>
-              ))}
+            <ol>
+              {sortedChapters.map((c: ChapterMeta, i: number) => {
+                const isActive = c.id === chapterId;
+                return (
+                  <li key={c.id}>
+                    {/* Separator line above each item except the first */}
+                    {i > 0 && (
+                      <div className="mx-5 border-t border-stone-100 dark:border-stone-800/60" />
+                    )}
+                    <Link
+                      href={`/books/${bookId}/chapter/${c.id}`}
+                      className={[
+                        // Fixed layout: same font-weight and padding always — prevents any size shift
+                        "flex items-start gap-2.5 px-5 py-3 text-sm font-medium transition-colors",
+                        isActive
+                          ? "text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border-l-2 border-blue-600 dark:border-blue-500 pl-[calc(1.25rem-2px)]"
+                          : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-800/50 border-l-2 border-transparent",
+                      ].join(" ")}
+                    >
+                      {/* Number badge — fixed width so text never shifts */}
+                      <span
+                        className={`shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center rounded text-[0.65rem] font-semibold leading-none transition-colors ${
+                          isActive
+                            ? "bg-blue-600 dark:bg-blue-500 text-white"
+                            : "bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-500"
+                        }`}
+                      >
+                        {i + 1}
+                      </span>
+                      <span className="leading-snug">{c.title}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ol>
           </nav>
         </aside>
 
         {/* Reader */}
-        <main className="flex-1 min-w-0 px-4 sm:px-8 py-16">
-          <article className="mx-auto" style={{ maxWidth: "70ch" }}>
+        <main className="flex-1 min-w-0 px-4 sm:px-10 lg:px-16 py-14">
+          <article className="mx-auto" style={{ maxWidth: "90ch" }}>
             {/* Chapter header */}
-            <header className="mb-12">
-              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400 dark:text-zinc-500 mb-3">
+            <header className="mb-10">
+              {/* Chapter label — typeset like a textbook section label */}
+              <p
+                className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500 mb-4"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
                 Chapter {currentIndex + 1}
               </p>
               <h1
-                className="text-3xl md:text-4xl font-bold text-stone-900 dark:text-zinc-100 leading-tight mb-4"
-                style={{ fontFamily: "var(--font-serif)" }}
+                className="text-3xl md:text-[2.25rem] font-bold leading-tight mb-0"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  color: "var(--prose-heading)",
+                  letterSpacing: "-0.01em",
+                  paddingBottom: "0.5rem",
+                  borderBottom: "2px solid var(--prose-rule-color)",
+                }}
               >
                 {chapter.meta.title}
               </h1>
-              <div className="flex items-center gap-3 text-xs text-stone-400 dark:text-zinc-500 border-b border-stone-200 dark:border-zinc-800 pb-8">
-                <span>{chapter.meta.word_count.toLocaleString()} words</span>
-                <span>·</span>
-                <span>~{Math.max(1, Math.round(chapter.meta.word_count / 250))} min read</span>
+              <div
+                className="flex items-center gap-3 pt-3 pb-8"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                <span className="text-xs text-stone-400 dark:text-stone-500">
+                  {chapter.meta.word_count.toLocaleString()} words
+                </span>
+                <span className="text-stone-300 dark:text-stone-700">·</span>
+                <span className="text-xs text-stone-400 dark:text-stone-500">
+                  ~{Math.max(1, Math.round(chapter.meta.word_count / 250))} min read
+                </span>
               </div>
             </header>
 
