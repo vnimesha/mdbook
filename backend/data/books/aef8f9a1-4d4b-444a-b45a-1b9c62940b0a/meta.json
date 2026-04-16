@@ -1,0 +1,28 @@
+{
+  "id": "aef8f9a1-4d4b-444a-b45a-1b9c62940b0a",
+  "title": "Math",
+  "author": "Vihanga",
+  "description": "",
+  "cover_color": "#1a1a2e",
+  "tags": [],
+  "chapters": [
+    {
+      "id": "2d5c0f1a-6c6d-487d-a21d-ce37c06df675",
+      "title": "Graphs Slopes Derivatives",
+      "filename": "2d5c0f1a-6c6d-487d-a21d-ce37c06df675.md",
+      "order": 0,
+      "word_count": 4644,
+      "created_at": "2026-04-16T02:49:21.768812+00:00"
+    },
+    {
+      "id": "4b2b1670-ff38-446f-94df-90fd629eee2c",
+      "title": "Math For Neural Nets",
+      "filename": "4b2b1670-ff38-446f-94df-90fd629eee2c.md",
+      "order": 1,
+      "word_count": 4102,
+      "created_at": "2026-04-16T02:50:48.250903+00:00"
+    }
+  ],
+  "created_at": "2026-04-16T02:49:21.743486+00:00",
+  "updated_at": "2026-04-16T02:50:48.250929+00:00"
+}

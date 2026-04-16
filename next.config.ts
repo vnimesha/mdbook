@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Allow the MDX remote renderer to process uploaded files
+  serverExternalPackages: ["@mdx-js/mdx", "next-mdx-remote"],
 };
 
 export default nextConfig;

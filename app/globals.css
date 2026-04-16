@@ -1,26 +1,240 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ── Custom font theme ─────────────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+
+  --color-parchment-50:  #fdfaf5;
+  --color-parchment-100: #f8f1e4;
+  --color-parchment-200: #efe0c5;
+  --color-parchment-300: #e3c99e;
+  --color-parchment-400: #d4ac74;
+  --color-parchment-500: #c49155;
+  --color-parchment-600: #a97340;
+  --color-parchment-700: #8c5832;
+  --color-parchment-800: #6f432a;
+  --color-parchment-900: #5a3622;
+
+  --color-ink-50:  #f5f4f2;
+  --color-ink-100: #e8e6e1;
+  --color-ink-200: #d2cfc5;
+  --color-ink-300: #b5b0a3;
+  --color-ink-400: #928d80;
+  --color-ink-500: #767167;
+  --color-ink-600: #605c54;
+  --color-ink-700: #4e4a44;
+  --color-ink-800: #3a3731;
+  --color-ink-900: #28261f;
+  --color-ink-950: #17150f;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── Base prose styles (used in reader) ─────────────────────────────────── */
+.prose-book {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.9;
+  color: #28261f;
+  max-width: 70ch;
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #17150f;
+    margin-top: 2.5em;
+    margin-bottom: 0.75em;
+    line-height: 1.25;
   }
+
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.75rem; border-bottom: 1px solid #e8e6e1; padding-bottom: 0.35em; }
+  h3 { font-size: 1.375rem; }
+  h4 { font-size: 1.125rem; }
+
+  p {
+    margin-bottom: 1.5em;
+    hanging-punctuation: first;
+  }
+
+  /* First paragraph after headings — no top-indent */
+  h1 + p,
+  h2 + p,
+  h3 + p,
+  h4 + p { text-indent: 0; }
+
+  /* Drop cap on the very first paragraph */
+  > p:first-child::first-letter {
+    font-size: 3.5rem;
+    font-weight: 700;
+    float: left;
+    line-height: 0.8;
+    margin-right: 0.1em;
+    margin-top: 0.12em;
+    color: #a97340;
+    font-family: var(--font-serif);
+  }
+
+  a {
+    color: #a97340;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: #d4ac74;
+    transition: color 0.15s, text-decoration-color 0.15s;
+  }
+  a:hover { color: #8c5832; text-decoration-color: #a97340; }
+
+  strong { font-weight: 600; color: #17150f; }
+  em     { font-style: italic; }
+
+  ul, ol {
+    padding-left: 1.75rem;
+    margin-bottom: 1.5em;
+  }
+  li { margin-bottom: 0.4em; }
+  li > p { margin-bottom: 0.5em; }
+
+  blockquote {
+    border-left: 4px solid #d4ac74;
+    margin: 2em 0;
+    padding: 1em 1.5em;
+    background: #fdfaf5;
+    font-style: italic;
+    color: #605c54;
+    border-radius: 0 4px 4px 0;
+  }
+  blockquote p { margin: 0; }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: #f8f1e4;
+    color: #8c5832;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    border: 1px solid #efe0c5;
+  }
+
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    background: #1e1c16;
+    color: #e8e6e1;
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 2em 0;
+    line-height: 1.6;
+    border: 1px solid #3a3731;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: 1em;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #d2cfc5;
+    margin: 3em auto;
+    width: 40%;
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin: 2em auto;
+    display: block;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2em 0;
+    font-size: 0.95em;
+  }
+  th {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 1rem;
+    background: #f8f1e4;
+    border-bottom: 2px solid #d4ac74;
+    text-align: left;
+    color: #605c54;
+  }
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e8e6e1;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fdfaf5; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d2cfc5; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #b5b0a3; }
+
+/* ── Focus ring ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #a97340;
+  outline-offset: 2px;
+  border-radius: 3px;
 }
+
+/* ── Selection ──────────────────────────────────────────────────────────── */
+::selection {
+  background: #e3c99e;
+  color: #17150f;
+}
+
+/* ── Form inputs & buttons ──────────────────────────────────────────────── */
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: #fff;
+  border: 1px solid #d6d3d1;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #1c1917;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: var(--font-sans);
+}
+.input:focus {
+  outline: none;
+  border-color: #a97340;
+  box-shadow: 0 0 0 3px rgba(169, 115, 64, 0.15);
+}
+.input::placeholder { color: #a8a29e; }
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: 1px solid #d6d3d1;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #44403c;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-secondary:hover { background: #f5f5f4; border-color: #a8a29e; }
+
+/* ── Highlight.js code theme (ink-on-parchment) ─────────────────────────── */
+.hljs-keyword, .hljs-selector-tag, .hljs-literal { color: #d4ac74; }
+.hljs-string, .hljs-attr { color: #a3d9a5; }
+.hljs-number, .hljs-symbol { color: #f4a261; }
+.hljs-comment, .hljs-quote { color: #768390; font-style: italic; }
+.hljs-type, .hljs-class { color: #79b8ff; }
+.hljs-function, .hljs-title { color: #b392f0; }
+.hljs-built_in { color: #e36209; }
+.hljs-variable, .hljs-template-variable { color: #e8e6e1; }
