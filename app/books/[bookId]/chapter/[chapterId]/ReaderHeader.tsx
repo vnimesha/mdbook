@@ -68,7 +68,7 @@ export default function ReaderHeader({
   const showSection = active !== null && active.text !== chapterTitle;
 
   return (
-    <header className="sticky top-0.5 z-40 bg-white/95 dark:bg-stone-950/95 backdrop-blur-sm border-b border-stone-200 dark:border-stone-800">
+    <header className="sticky top-0.5 z-40 backdrop-blur-sm border-b border-stone-200 dark:border-[#1a1a18] bg-white/95 dark:bg-[#2C2C2A]/95">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
 
         {/* ── Left: back to book ── */}

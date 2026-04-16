@@ -1,8 +1,32 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
-import { createBook, uploadChapter } from "@/lib/api";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createBook, uploadChapter, uploadImage } from "@/lib/api";
+
+const IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".avif"]);
+
+function isImage(file: File) {
+  const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+  return IMAGE_EXTS.has(ext);
+}
+
+function rewriteImageUrls(content: string, urlMap: Map<string, string>): string {
+  if (urlMap.size === 0) return content;
+  return content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
+    const basename = src.split("/").pop() ?? src;
+    const newUrl = urlMap.get(basename);
+    return newUrl ? `![${alt}](${newUrl})` : match;
+  });
+}
+
+async function patchFile(file: File, urlMap: Map<string, string>): Promise<File> {
+  if (urlMap.size === 0) return file;
+  const text = await file.text();
+  const patched = rewriteImageUrls(text, urlMap);
+  if (patched === text) return file;
+  return new File([patched], file.name, { type: file.type });
+}
 
 const COVER_COLORS = [
   "#1a1a2e", "#16213e", "#0f3460", "#533483",
@@ -20,7 +44,16 @@ interface FileEntry {
 export default function CreateBookForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  // webkitdirectory must be set as a DOM property — React doesn't forward it
+  useEffect(() => {
+    if (folderInputRef.current) {
+      (folderInputRef.current as any).webkitdirectory = true;
+    }
+  }, []);
+  const [folderImages, setFolderImages] = useState<File[]>([]);
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -42,19 +75,26 @@ export default function CreateBookForm() {
   const removeTag = (t: string) => setTags((prev) => prev.filter((x) => x !== t));
 
   // ── File helpers ─────────────────────────────────────────────────────────
-  const addFiles = (incoming: FileList | null) => {
+  const addFiles = (incoming: FileList | File[] | null) => {
     if (!incoming) return;
-    const valid = Array.from(incoming).filter((f) =>
-      f.name.endsWith(".md") || f.name.endsWith(".mdx"),
-    );
+    const all = Array.from(incoming);
+    const mdFiles = all.filter((f) => f.name.endsWith(".md") || f.name.endsWith(".mdx"));
     setFiles((prev) => [
       ...prev,
-      ...valid.map((f) => ({
+      ...mdFiles.map((f) => ({
         file: f,
         title: f.name.replace(/\.(mdx?)$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
         status: "pending" as const,
       })),
     ]);
+  };
+
+  const addFolderFiles = (incoming: FileList | null) => {
+    if (!incoming) return;
+    const all = Array.from(incoming);
+    const imgs = all.filter(isImage);
+    if (imgs.length) setFolderImages((prev) => [...prev, ...imgs]);
+    addFiles(all.filter((f) => f.name.endsWith(".md") || f.name.endsWith(".mdx")));
   };
 
   const removeFile = (idx: number) =>
@@ -67,7 +107,10 @@ export default function CreateBookForm() {
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    addFiles(e.dataTransfer.files);
+    const all = Array.from(e.dataTransfer.files);
+    const imgs = all.filter(isImage);
+    if (imgs.length) setFolderImages((prev) => [...prev, ...imgs]);
+    addFiles(all);
   }, []);
 
   // ── Submit ───────────────────────────────────────────────────────────────
@@ -81,12 +124,25 @@ export default function CreateBookForm() {
     try {
       const book = await createBook({ title, author, description, cover_color: coverColor, tags });
 
+      // 1. Upload images first, build a basename → absolute URL map
+      const urlMap = new Map<string, string>();
+      for (const img of folderImages) {
+        try {
+          const { filename, url } = await uploadImage(book.id, img);
+          urlMap.set(filename, url);
+        } catch {
+          // non-fatal: image upload failure won't abort the whole book
+        }
+      }
+
+      // 2. Upload chapters, patching image URLs in markdown when needed
       for (let i = 0; i < files.length; i++) {
         setFiles((prev) =>
           prev.map((f, idx) => (idx === i ? { ...f, status: "uploading" } : f)),
         );
         try {
-          await uploadChapter(book.id, files[i].file, files[i].title, i);
+          const patchedFile = await patchFile(files[i].file, urlMap);
+          await uploadChapter(book.id, patchedFile, files[i].title, i);
           setFiles((prev) =>
             prev.map((f, idx) => (idx === i ? { ...f, status: "done" } : f)),
           );
@@ -249,13 +305,13 @@ export default function CreateBookForm() {
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={onDrop}
-          onClick={() => fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors ${
+          className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
             isDragging
               ? "border-stone-500 dark:border-stone-500 bg-stone-50 dark:bg-stone-800"
-              : "border-stone-200 dark:border-stone-700 hover:border-stone-400 dark:hover:border-stone-500 hover:bg-stone-50 dark:hover:bg-stone-800"
+              : "border-stone-200 dark:border-stone-700"
           }`}
         >
+          {/* Hidden inputs */}
           <input
             ref={fileInputRef}
             type="file"
@@ -264,12 +320,45 @@ export default function CreateBookForm() {
             className="hidden"
             onChange={(e) => addFiles(e.target.files)}
           />
-          <p className="text-3xl mb-3 select-none">📄</p>
-          <p className="text-stone-700 dark:text-stone-300 font-medium">
+          <input
+            ref={folderInputRef}
+            type="file"
+            multiple
+            className="hidden"
+            onChange={(e) => addFolderFiles(e.target.files)}
+          />
+
+          <p className="text-3xl mb-3 select-none">📂</p>
+          <p className="text-stone-600 dark:text-stone-400 text-sm mb-4">
             Drop <code className="text-xs bg-stone-100 dark:bg-stone-800 px-1 py-0.5 rounded">.md</code> /{" "}
-            <code className="text-xs bg-stone-100 dark:bg-stone-800 px-1 py-0.5 rounded">.mdx</code> files here
+            <code className="text-xs bg-stone-100 dark:bg-stone-800 px-1 py-0.5 rounded">.mdx</code> files or a folder containing chapters &amp; images
           </p>
-          <p className="text-stone-400 dark:text-stone-500 text-sm mt-1">or click to browse</p>
+
+          <div className="flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="btn-secondary text-sm"
+            >
+              Browse files
+            </button>
+            <button
+              type="button"
+              onClick={() => folderInputRef.current?.click()}
+              className="btn-secondary text-sm flex items-center gap-1.5"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              Upload folder
+            </button>
+          </div>
+
+          {folderImages.length > 0 && (
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-3">
+              {folderImages.length} image{folderImages.length !== 1 ? "s" : ""} found — will be uploaded automatically
+            </p>
+          )}
         </div>
 
         {/* File list */}

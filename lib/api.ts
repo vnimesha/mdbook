@@ -59,6 +59,25 @@ export async function getChapter(bookId: string, chapterId: string): Promise<Cha
   return request<ChapterContent>(`/books/${bookId}/chapters/${chapterId}`);
 }
 
+export async function uploadImage(
+  bookId: string,
+  file: File,
+): Promise<{ filename: string; url: string }> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${BACKEND}/books/${bookId}/images`, {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`Image upload failed: ${text}`);
+  }
+  const data = (await res.json()) as { filename: string; url: string };
+  // Resolve to full absolute URL so <img src> works from the browser
+  return { ...data, url: `${BACKEND}${data.url}` };
+}
+
 export async function uploadChapter(
   bookId: string,
   file: File,

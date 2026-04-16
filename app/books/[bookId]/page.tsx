@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import DeleteBookButton from "./DeleteBookButton";
 import AddChapterButton from "./AddChapterButton";
+import DeleteChapterButton from "./DeleteChapterButton";
 
 export const dynamic = "force-dynamic";
 
@@ -124,16 +125,16 @@ export default async function BookPage({ params }: Props) {
             ) : (
               <ol className="space-y-1.5">
                 {sortedChapters.map((chapter, i) => (
-                  <li key={chapter.id}>
+                  <li key={chapter.id} className="flex items-center gap-1 group">
                     <Link
                       href={`/books/${book.id}/chapter/${chapter.id}`}
-                      className="flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors group"
+                      className="flex-1 min-w-0 flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                     >
                       <span className="w-8 h-8 flex items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800 group-hover:bg-white dark:group-hover:bg-stone-700 text-stone-500 dark:text-stone-400 text-xs font-semibold shrink-0 transition-colors">
                         {i + 1}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-stone-800 dark:text-stone-200 group-hover:text-stone-900 dark:group-hover:text-stone-100 truncate">
+                        <p className="font-medium text-stone-800 dark:text-stone-200 truncate">
                           {chapter.title}
                         </p>
                         <p className="text-xs text-stone-400 dark:text-stone-500 mt-0.5">
@@ -145,6 +146,7 @@ export default async function BookPage({ params }: Props) {
                         →
                       </span>
                     </Link>
+                    <DeleteChapterButton bookId={book.id} chapterId={chapter.id} />
                   </li>
                 ))}
               </ol>

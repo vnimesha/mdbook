@@ -5,9 +5,9 @@
 
 /* ── Font theme ─────────────────────────────────────────────────────────── */
 @theme inline {
-  /* STIX Two Text: STM (scientific/technical/mathematical) publishing standard */
+  /* Lora: warm humanist serif designed for screen reading */
   --font-sans:  var(--font-inter), "Inter", system-ui, sans-serif;
-  --font-serif: "STIX Two Text", "Times New Roman", serif;
+  --font-serif: "Lora", "Georgia", serif;
   --font-mono:  "IBM Plex Mono", "JetBrains Mono", "Cascadia Code", monospace;
 
   /* Academic-blue palette (replaces warm amber) */
@@ -96,8 +96,8 @@
 /* ── Science/Math prose ─────────────────────────────────────────────────── */
 .prose-book {
   font-family: var(--font-serif);
-  font-size: 1.05rem;           /* ~17px — denser than literary prose */
-  line-height: 1.75;            /* academic book standard */
+  font-size: 1.15rem;           /* ~18.4px — comfortable reading size */
+  line-height: 1.8;             /* open leading for easy scanning */
   color: var(--prose-body);
   max-width: 90ch;              /* wider for science/math content */
   text-align: justify;

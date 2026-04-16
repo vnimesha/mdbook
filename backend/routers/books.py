@@ -1,9 +1,15 @@
-from fastapi import APIRouter, HTTPException, status
-from datetime import datetime, timezone
+import re
 import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+
+from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
 
 from models import BookMeta, CreateBookRequest, UpdateBookRequest
 import storage
+
+ALLOWED_IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".avif"}
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -69,3 +75,38 @@ def delete_book(book_id: str):
     deleted = storage.delete_book(book_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Book not found")
+
+
+# ── Images ────────────────────────────────────────────────────────────────────
+
+@router.post("/{book_id}/images", status_code=status.HTTP_201_CREATED)
+async def upload_image(book_id: str, file: UploadFile = File(...)):
+    book = storage.load_book(book_id)
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    ext = Path(file.filename or "").suffix.lower()
+    if ext not in ALLOWED_IMAGE_EXTS:
+        raise HTTPException(status_code=400, detail=f"Unsupported image type: {ext}")
+
+    # Sanitise filename: keep word chars, dots, hyphens
+    raw_name = Path(file.filename or "image").name
+    safe_name = re.sub(r"[^\w.\-]", "_", raw_name)
+
+    images_dir = storage.DATA_DIR / book_id / "images"
+    images_dir.mkdir(parents=True, exist_ok=True)
+
+    content = await file.read()
+    (images_dir / safe_name).write_bytes(content)
+
+    return {"filename": safe_name, "url": f"/books/{book_id}/images/{safe_name}"}
+
+
+@router.get("/{book_id}/images/{filename}")
+def get_image(book_id: str, filename: str):
+    # Prevent path traversal
+    safe_name = Path(filename).name
+    path = storage.DATA_DIR / book_id / "images" / safe_name
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="Image not found")
+    return FileResponse(path)

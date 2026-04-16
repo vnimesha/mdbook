@@ -40,7 +40,7 @@ export default async function ChapterPage({ params }: Props) {
     currentIndex < sortedChapters.length - 1 ? sortedChapters[currentIndex + 1] : null;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-stone-950 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-[#2C2C2A] flex flex-col">
       <ReaderProgress />
 
       <ReaderHeader
@@ -53,7 +53,7 @@ export default async function ChapterPage({ params }: Props) {
 
       <div className="flex-1 flex">
         {/* TOC sidebar */}
-        <aside className="hidden xl:block w-64 shrink-0 sticky top-[3.625rem] h-[calc(100vh-3.625rem)] overflow-y-auto border-r border-stone-200 dark:border-stone-800">
+        <aside className="hidden xl:flex xl:flex-col w-60 shrink-0 sticky top-[3.625rem] h-[calc(100vh-3.625rem)] bg-stone-900 dark:bg-[#222220] border-r border-stone-800 dark:border-[#1a1a18]">
           <div className="p-5 pb-2">
             <p
               className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-stone-400 dark:text-stone-600 mb-3"
