@@ -108,8 +108,8 @@ export default function CreateBookForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* ── Book details ── */}
-      <section className="bg-white rounded-xl border border-stone-200 p-6 space-y-5">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-stone-400">
+      <section className="bg-white dark:bg-zinc-900 rounded-xl border border-stone-200 dark:border-zinc-800 p-6 space-y-5">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-stone-400 dark:text-zinc-500">
           Book Details
         </h2>
 
@@ -148,7 +148,7 @@ export default function CreateBookForm() {
 
         {/* Cover color picker */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-2">
+          <label className="block text-sm font-medium text-stone-700 dark:text-zinc-300 mb-2">
             Cover Color
           </label>
           <div className="flex flex-wrap gap-2 items-center">
@@ -178,7 +178,7 @@ export default function CreateBookForm() {
 
         {/* Tags */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-2">Tags</label>
+          <label className="block text-sm font-medium text-stone-700 dark:text-zinc-300 mb-2">Tags</label>
           <div className="flex gap-2">
             <input
               type="text"
@@ -197,13 +197,13 @@ export default function CreateBookForm() {
               {tags.map((t) => (
                 <span
                   key={t}
-                  className="flex items-center gap-1 px-2.5 py-0.5 bg-stone-100 text-stone-700 text-sm rounded-full"
+                  className="flex items-center gap-1 px-2.5 py-0.5 bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 text-sm rounded-full"
                 >
                   {t}
                   <button
                     type="button"
                     onClick={() => removeTag(t)}
-                    className="text-stone-400 hover:text-stone-700 text-xs ml-0.5"
+                    className="text-stone-400 dark:text-zinc-500 hover:text-stone-700 dark:hover:text-zinc-200 text-xs ml-0.5"
                   >
                     ×
                   </button>
@@ -239,8 +239,8 @@ export default function CreateBookForm() {
       </div>
 
       {/* ── Chapter upload ── */}
-      <section className="bg-white rounded-xl border border-stone-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-stone-400">
+      <section className="bg-white dark:bg-zinc-900 rounded-xl border border-stone-200 dark:border-zinc-800 p-6 space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-stone-400 dark:text-zinc-500">
           Chapters
         </h2>
 
@@ -252,8 +252,8 @@ export default function CreateBookForm() {
           onClick={() => fileInputRef.current?.click()}
           className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors ${
             isDragging
-              ? "border-stone-500 bg-stone-50"
-              : "border-stone-200 hover:border-stone-400 hover:bg-stone-50"
+              ? "border-stone-500 dark:border-zinc-500 bg-stone-50 dark:bg-zinc-800"
+              : "border-stone-200 dark:border-zinc-700 hover:border-stone-400 dark:hover:border-zinc-500 hover:bg-stone-50 dark:hover:bg-zinc-800"
           }`}
         >
           <input
@@ -265,11 +265,11 @@ export default function CreateBookForm() {
             onChange={(e) => addFiles(e.target.files)}
           />
           <p className="text-3xl mb-3 select-none">📄</p>
-          <p className="text-stone-700 font-medium">
-            Drop <code className="text-xs bg-stone-100 px-1 py-0.5 rounded">.md</code> /{" "}
-            <code className="text-xs bg-stone-100 px-1 py-0.5 rounded">.mdx</code> files here
+          <p className="text-stone-700 dark:text-zinc-300 font-medium">
+            Drop <code className="text-xs bg-stone-100 dark:bg-zinc-800 px-1 py-0.5 rounded">.md</code> /{" "}
+            <code className="text-xs bg-stone-100 dark:bg-zinc-800 px-1 py-0.5 rounded">.mdx</code> files here
           </p>
-          <p className="text-stone-400 text-sm mt-1">or click to browse</p>
+          <p className="text-stone-400 dark:text-zinc-500 text-sm mt-1">or click to browse</p>
         </div>
 
         {/* File list */}
@@ -278,9 +278,9 @@ export default function CreateBookForm() {
             {files.map((entry, i) => (
               <li
                 key={i}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-stone-50 border border-stone-100"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-stone-50 dark:bg-zinc-800 border border-stone-100 dark:border-zinc-700"
               >
-                <span className="text-stone-400 select-none text-xs w-5 text-right shrink-0">
+                <span className="text-stone-400 dark:text-zinc-500 select-none text-xs w-5 text-right shrink-0">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -288,10 +288,10 @@ export default function CreateBookForm() {
                     type="text"
                     value={entry.title}
                     onChange={(e) => updateFileTitle(i, e.target.value)}
-                    className="w-full text-sm font-medium text-stone-800 bg-transparent border-b border-transparent focus:border-stone-300 focus:outline-none pb-0.5"
+                    className="w-full text-sm font-medium text-stone-800 dark:text-zinc-200 bg-transparent border-b border-transparent focus:border-stone-300 dark:focus:border-zinc-600 focus:outline-none pb-0.5"
                     disabled={entry.status !== "pending"}
                   />
-                  <p className="text-xs text-stone-400 truncate mt-0.5">{entry.file.name}</p>
+                  <p className="text-xs text-stone-400 dark:text-zinc-500 truncate mt-0.5">{entry.file.name}</p>
                   {entry.error && <p className="text-xs text-red-500 mt-0.5">{entry.error}</p>}
                 </div>
                 <StatusBadge status={entry.status} />
@@ -299,7 +299,7 @@ export default function CreateBookForm() {
                   <button
                     type="button"
                     onClick={() => removeFile(i)}
-                    className="text-stone-300 hover:text-red-500 transition-colors text-lg leading-none"
+                    className="text-stone-300 dark:text-zinc-600 hover:text-red-500 transition-colors text-lg leading-none"
                   >
                     ×
                   </button>
@@ -312,7 +312,7 @@ export default function CreateBookForm() {
 
       {/* ── Error & submit ── */}
       {globalError && (
-        <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <p className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg px-4 py-3">
           {globalError}
         </p>
       )}
@@ -320,7 +320,7 @@ export default function CreateBookForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="w-full py-3.5 bg-stone-900 text-white font-semibold rounded-xl hover:bg-stone-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full py-3.5 bg-stone-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold rounded-xl hover:bg-stone-700 dark:hover:bg-zinc-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {submitting ? "Creating…" : "Create Book"}
       </button>
@@ -331,7 +331,7 @@ export default function CreateBookForm() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-stone-700 mb-1.5">{label}</label>
+      <label className="block text-sm font-medium text-stone-700 dark:text-zinc-300 mb-1.5">{label}</label>
       {children}
     </div>
   );

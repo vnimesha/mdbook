@@ -43,7 +43,7 @@ export default function AddChapterButton({ bookId }: { bookId: string }) {
       <button
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-stone-200 text-stone-600 hover:bg-stone-100 disabled:opacity-50 transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-stone-200 dark:border-zinc-700 text-stone-600 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 disabled:opacity-50 transition-colors"
       >
         {uploading ? (
           <span className="animate-pulse">Uploading…</span>
