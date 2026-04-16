@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteChapter } from "@/lib/api";
+import { ui } from "@/lib/ui";
 
 export default function DeleteChapterButton({
   bookId,
@@ -42,8 +43,8 @@ export default function DeleteChapterButton({
       disabled={deleting}
       className={`shrink-0 flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
         confirming
-          ? "bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50"
-          : "text-stone-300 dark:text-stone-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 opacity-0 group-hover:opacity-100"
+          ? ui.dangerActive
+          : `${ui.textFaint} hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 opacity-0 group-hover:opacity-100`
       } disabled:opacity-40`}
       title={confirming ? "Click again to confirm" : "Delete chapter"}
     >

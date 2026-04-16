@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme, type Theme } from "@/lib/theme";
+import { ui } from "@/lib/ui";
 
 const LABELS: Record<Theme, string> = {
   light: "Light",
@@ -29,10 +30,10 @@ const ICONS: Record<Theme, React.ReactNode> = {
 };
 
 export default function ThemeToggle() {
-  const { theme, toggle, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 p-0.5">
+    <div className={`flex items-center gap-0.5 rounded-lg p-0.5 ${ui.toggleWrap}`}>
       {(["light", "dark", "system"] as Theme[]).map((t) => (
         <button
           key={t}
@@ -40,9 +41,7 @@ export default function ThemeToggle() {
           title={LABELS[t]}
           aria-label={`Switch to ${LABELS[t]} theme`}
           className={`flex items-center justify-center w-7 h-7 rounded-md text-xs transition-all ${
-            theme === t
-              ? "bg-white dark:bg-stone-600 text-stone-800 dark:text-stone-100 shadow-sm"
-              : "text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300"
+            theme === t ? ui.toggleActive : ui.toggleInactive
           }`}
         >
           {ICONS[t]}

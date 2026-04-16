@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import DeleteBookButton from "./DeleteBookButton";
 import AddChapterButton from "./AddChapterButton";
 import DeleteChapterButton from "./DeleteChapterButton";
+import { ui } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -109,7 +110,7 @@ export default async function BookPage({ params }: Props) {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
               <h2
-                className="text-xl font-semibold text-stone-800 dark:text-stone-200"
+                className={`text-xl font-semibold ${ui.textSecondary}`}
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 Table of Contents
@@ -118,7 +119,7 @@ export default async function BookPage({ params }: Props) {
             </div>
 
             {sortedChapters.length === 0 ? (
-              <div className="text-center py-16 text-stone-400 dark:text-stone-500">
+              <div className={`text-center py-16 ${ui.textFaint}`}>
                 <p className="text-4xl mb-3">📄</p>
                 <p>No chapters yet. Add your first chapter!</p>
               </div>
@@ -128,21 +129,21 @@ export default async function BookPage({ params }: Props) {
                   <li key={chapter.id} className="flex items-center gap-1 group">
                     <Link
                       href={`/books/${book.id}/chapter/${chapter.id}`}
-                      className="flex-1 min-w-0 flex items-center gap-4 px-4 py-3.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                      className={`flex-1 min-w-0 flex items-center gap-4 px-4 py-3.5 rounded-xl ${ui.hoverBg} transition-colors`}
                     >
-                      <span className="w-8 h-8 flex items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800 group-hover:bg-white dark:group-hover:bg-stone-700 text-stone-500 dark:text-stone-400 text-xs font-semibold shrink-0 transition-colors">
+                      <span className={`w-8 h-8 flex items-center justify-center rounded-full ${ui.inlineBg} group-hover:bg-white dark:group-hover:bg-stone-700 ${ui.textMuted} text-xs font-semibold shrink-0 transition-colors`}>
                         {i + 1}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-stone-800 dark:text-stone-200 truncate">
+                        <p className={`font-medium ${ui.textSecondary} truncate`}>
                           {chapter.title}
                         </p>
-                        <p className="text-xs text-stone-400 dark:text-stone-500 mt-0.5">
+                        <p className={`text-xs ${ui.textFaint} mt-0.5`}>
                           {chapter.word_count.toLocaleString()} words ·{" "}
                           ~{wordCountToTime(chapter.word_count)}
                         </p>
                       </div>
-                      <span className="text-stone-300 dark:text-stone-600 group-hover:text-stone-500 dark:group-hover:text-stone-400 transition-colors">
+                      <span className={`${ui.border.replace("border-", "text-")} group-hover:${ui.textMuted} transition-colors`}>
                         →
                       </span>
                     </Link>

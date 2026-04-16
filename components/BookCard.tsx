@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BookSummary } from "@/lib/types";
+import { ui } from "@/lib/ui";
 
 interface Props {
   book: BookSummary;
@@ -15,7 +16,7 @@ function readingTime(chapterCount: number): string {
 export default function BookCard({ book }: Props) {
   return (
     <Link href={`/books/${book.id}`} className="group block">
-      <article className="h-full bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm hover:shadow-md dark:hover:shadow-stone-900 transition-all duration-200 hover:-translate-y-0.5">
+      <article className={`h-full ${ui.card} rounded-xl border ${ui.border} overflow-hidden shadow-sm hover:shadow-md dark:hover:shadow-stone-900 transition-all duration-200 hover:-translate-y-0.5`}>
         {/* Spine strip */}
         <div className="h-2 w-full" style={{ backgroundColor: book.cover_color }} />
 
@@ -38,7 +39,7 @@ export default function BookCard({ book }: Props) {
               {book.author}
             </p>
             <h2
-              className="text-xl font-bold leading-tight text-stone-900 dark:text-stone-100 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-colors"
+              className={`text-xl font-bold leading-tight ${ui.text} group-hover:${ui.textSecondary} transition-colors`}
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {book.title}
@@ -49,12 +50,12 @@ export default function BookCard({ book }: Props) {
         {/* Meta */}
         <div className="p-5">
           {book.description && (
-            <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">
+            <p className={`text-sm ${ui.textMuted} line-clamp-2 mb-4 leading-relaxed`}>
               {book.description}
             </p>
           )}
 
-          <div className="flex items-center gap-3 text-xs text-stone-400 dark:text-stone-500">
+          <div className={`flex items-center gap-3 text-xs ${ui.textFaint}`}>
             <span>{book.chapter_count} {book.chapter_count === 1 ? "chapter" : "chapters"}</span>
             <span>·</span>
             <span>{readingTime(book.chapter_count)}</span>
@@ -65,7 +66,7 @@ export default function BookCard({ book }: Props) {
               {book.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-0.5 text-xs rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400"
+                  className={`px-2 py-0.5 text-xs rounded-full ${ui.tag}`}
                 >
                   {tag}
                 </span>

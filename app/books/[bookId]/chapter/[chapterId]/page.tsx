@@ -9,6 +9,7 @@ import type { ChapterMeta } from "@/lib/types";
 import ReaderProgress from "./ReaderProgress";
 import ReaderHeader from "./ReaderHeader";
 import ChapterNav from "./ChapterNav";
+import { ui } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +41,7 @@ export default async function ChapterPage({ params }: Props) {
     currentIndex < sortedChapters.length - 1 ? sortedChapters[currentIndex + 1] : null;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#2C2C2A] flex flex-col">
+    <div className={`min-h-screen ${ui.readerBg} flex flex-col`}>
       <ReaderProgress />
 
       <ReaderHeader
@@ -53,10 +54,10 @@ export default async function ChapterPage({ params }: Props) {
 
       <div className="flex-1 flex">
         {/* TOC sidebar */}
-        <aside className="hidden xl:flex xl:flex-col w-60 shrink-0 sticky top-[3.625rem] h-[calc(100vh-3.625rem)] bg-stone-50 dark:bg-[#222220] border-r border-stone-200 dark:border-[#1a1918]">
+        <aside className={`hidden xl:flex xl:flex-col w-60 shrink-0 sticky top-[3.625rem] h-[calc(100vh-3.625rem)] ${ui.sidebarBg} border-r ${ui.sidebarBorder}`}>
           <div className="p-5 pb-2">
             <p
-              className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-stone-400 dark:text-stone-400 mb-3"
+              className={`text-[0.65rem] font-semibold uppercase tracking-[0.15em] ${ui.sidebarLabel} mb-3`}
               style={{ fontFamily: "var(--font-sans)" }}
             >
               Contents
@@ -70,24 +71,18 @@ export default async function ChapterPage({ params }: Props) {
                   <li key={c.id}>
                     {/* Separator line above each item except the first */}
                     {i > 0 && (
-                      <div className="mx-5 border-t border-stone-200 dark:border-stone-800/60" />
+                      <div className={`mx-5 border-t ${ui.sidebarSep}`} />
                     )}
                     <Link
                       href={`/books/${bookId}/chapter/${c.id}`}
-                      className={[
-                        // Fixed layout: same font-weight and padding always — prevents any size shift
-                        "flex items-start gap-2.5 px-5 py-3 text-sm font-medium transition-colors",
-                        isActive
-                          ? "text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-white/10 border-l-2 border-blue-500 dark:border-blue-400 pl-[calc(1.25rem-2px)]"
-                          : "text-stone-500 dark:text-stone-300 hover:text-stone-800 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-white/10 border-l-2 border-transparent",
-                      ].join(" ")}
+                      className={`flex items-start gap-2.5 px-5 py-3 text-sm font-medium transition-colors ${
+                        isActive ? ui.sidebarItemActive : ui.sidebarItemInactive
+                      }`}
                     >
                       {/* Number badge — fixed width so text never shifts */}
                       <span
                         className={`shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center rounded text-[0.65rem] font-semibold leading-none transition-colors ${
-                          isActive
-                            ? "bg-blue-500 dark:bg-blue-500/80 text-white"
-                            : "bg-stone-200 dark:bg-white/10 text-stone-500 dark:text-stone-400"
+                          isActive ? ui.sidebarBadgeActive : ui.sidebarBadgeInactive
                         }`}
                       >
                         {i + 1}
@@ -108,7 +103,7 @@ export default async function ChapterPage({ params }: Props) {
             <header className="mb-10">
               {/* Chapter label — typeset like a textbook section label */}
               <p
-                className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400 dark:text-stone-500 mb-4"
+                className={`text-xs font-semibold uppercase tracking-[0.2em] ${ui.textFaint} mb-4`}
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 Chapter {currentIndex + 1}
@@ -129,11 +124,11 @@ export default async function ChapterPage({ params }: Props) {
                 className="flex items-center gap-3 pt-3 pb-8"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
-                <span className="text-xs text-stone-400 dark:text-stone-500">
+                <span className={`text-xs ${ui.textFaint}`}>
                   {chapter.meta.word_count.toLocaleString()} words
                 </span>
-                <span className="text-stone-300 dark:text-stone-700">·</span>
-                <span className="text-xs text-stone-400 dark:text-stone-500">
+                <span className={ui.breadcrumbDivider}>·</span>
+                <span className={`text-xs ${ui.textFaint}`}>
                   ~{Math.max(1, Math.round(chapter.meta.word_count / 250))} min read
                 </span>
               </div>

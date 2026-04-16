@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createBook, uploadChapter, uploadImage } from "@/lib/api";
+import { ui } from "@/lib/ui";
 
 const IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".avif"]);
 
@@ -164,8 +165,8 @@ export default function CreateBookForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* ── Book details ── */}
-      <section className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 p-6 space-y-5">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-stone-400 dark:text-stone-500">
+      <section className={`${ui.card} rounded-xl border ${ui.border} p-6 space-y-5`}>
+        <h2 className={`text-sm font-semibold uppercase tracking-widest ${ui.textFaint}`}>
           Book Details
         </h2>
 
@@ -204,7 +205,7 @@ export default function CreateBookForm() {
 
         {/* Cover color picker */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+          <label className={`block text-sm font-medium ${ui.textSecondary} mb-2`}>
             Cover Color
           </label>
           <div className="flex flex-wrap gap-2 items-center">
@@ -226,7 +227,7 @@ export default function CreateBookForm() {
               type="color"
               value={coverColor}
               onChange={(e) => setCoverColor(e.target.value)}
-              className="w-8 h-8 rounded-full border-2 border-stone-200 cursor-pointer overflow-hidden"
+              className={`w-8 h-8 rounded-full border-2 ${ui.border} cursor-pointer overflow-hidden`}
               title="Custom color"
             />
           </div>
@@ -234,7 +235,7 @@ export default function CreateBookForm() {
 
         {/* Tags */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Tags</label>
+          <label className={`block text-sm font-medium ${ui.textSecondary} mb-2`}>Tags</label>
           <div className="flex gap-2">
             <input
               type="text"
@@ -253,13 +254,13 @@ export default function CreateBookForm() {
               {tags.map((t) => (
                 <span
                   key={t}
-                  className="flex items-center gap-1 px-2.5 py-0.5 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-sm rounded-full"
+                  className={`flex items-center gap-1 px-2.5 py-0.5 ${ui.inlineBg} ${ui.textSecondary} text-sm rounded-full`}
                 >
                   {t}
                   <button
                     type="button"
                     onClick={() => removeTag(t)}
-                    className="text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 text-xs ml-0.5"
+                    className={`${ui.textFaint} hover:${ui.textSecondary} text-xs ml-0.5`}
                   >
                     ×
                   </button>
@@ -295,8 +296,8 @@ export default function CreateBookForm() {
       </div>
 
       {/* ── Chapter upload ── */}
-      <section className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 p-6 space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-stone-400 dark:text-stone-500">
+      <section className={`${ui.card} rounded-xl border ${ui.border} p-6 space-y-4`}>
+        <h2 className={`text-sm font-semibold uppercase tracking-widest ${ui.textFaint}`}>
           Chapters
         </h2>
 
@@ -307,8 +308,8 @@ export default function CreateBookForm() {
           onDrop={onDrop}
           className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
             isDragging
-              ? "border-stone-500 dark:border-stone-500 bg-stone-50 dark:bg-stone-800"
-              : "border-stone-200 dark:border-stone-700"
+              ? `${ui.borderStrong} ${ui.inlineBg}`
+              : ui.border
           }`}
         >
           {/* Hidden inputs */}
@@ -329,9 +330,9 @@ export default function CreateBookForm() {
           />
 
           <p className="text-3xl mb-3 select-none">📂</p>
-          <p className="text-stone-600 dark:text-stone-400 text-sm mb-4">
-            Drop <code className="text-xs bg-stone-100 dark:bg-stone-800 px-1 py-0.5 rounded">.md</code> /{" "}
-            <code className="text-xs bg-stone-100 dark:bg-stone-800 px-1 py-0.5 rounded">.mdx</code> files or a folder containing chapters &amp; images
+          <p className={`${ui.textLabel} text-sm mb-4`}>
+            Drop <code className={`text-xs ${ui.inlineBg} px-1 py-0.5 rounded`}>.md</code> /{" "}
+            <code className={`text-xs ${ui.inlineBg} px-1 py-0.5 rounded`}>.mdx</code> files or a folder containing chapters &amp; images
           </p>
 
           <div className="flex items-center justify-center gap-3">
@@ -367,9 +368,9 @@ export default function CreateBookForm() {
             {files.map((entry, i) => (
               <li
                 key={i}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-stone-50 dark:bg-stone-800 border border-stone-100 dark:border-stone-700"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg ${ui.inlineBg} border ${ui.border}`}
               >
-                <span className="text-stone-400 dark:text-stone-500 select-none text-xs w-5 text-right shrink-0">
+                <span className={`${ui.textFaint} select-none text-xs w-5 text-right shrink-0`}>
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -377,10 +378,10 @@ export default function CreateBookForm() {
                     type="text"
                     value={entry.title}
                     onChange={(e) => updateFileTitle(i, e.target.value)}
-                    className="w-full text-sm font-medium text-stone-800 dark:text-stone-200 bg-transparent border-b border-transparent focus:border-stone-300 dark:focus:border-stone-600 focus:outline-none pb-0.5"
+                    className={`w-full text-sm font-medium ${ui.textSecondary} bg-transparent border-b border-transparent focus:${ui.border} focus:outline-none pb-0.5`}
                     disabled={entry.status !== "pending"}
                   />
-                  <p className="text-xs text-stone-400 dark:text-stone-500 truncate mt-0.5">{entry.file.name}</p>
+                  <p className={`text-xs ${ui.textFaint} truncate mt-0.5`}>{entry.file.name}</p>
                   {entry.error && <p className="text-xs text-red-500 mt-0.5">{entry.error}</p>}
                 </div>
                 <StatusBadge status={entry.status} />
@@ -388,7 +389,7 @@ export default function CreateBookForm() {
                   <button
                     type="button"
                     onClick={() => removeFile(i)}
-                    className="text-stone-300 dark:text-stone-600 hover:text-red-500 transition-colors text-lg leading-none"
+                    className={`${ui.textFaint} hover:text-red-500 transition-colors text-lg leading-none`}
                   >
                     ×
                   </button>
@@ -401,7 +402,7 @@ export default function CreateBookForm() {
 
       {/* ── Error & submit ── */}
       {globalError && (
-        <p className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg px-4 py-3">
+        <p className={`${ui.dangerText} text-sm ${ui.dangerBg} border ${ui.dangerBorder} rounded-lg px-4 py-3`}>
           {globalError}
         </p>
       )}
@@ -409,7 +410,7 @@ export default function CreateBookForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="w-full py-3.5 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 font-semibold rounded-xl hover:bg-stone-700 dark:hover:bg-stone-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className={`w-full py-3.5 font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed ${ui.btnPrimary}`}
       >
         {submitting ? "Creating…" : "Create Book"}
       </button>
@@ -420,7 +421,7 @@ export default function CreateBookForm() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{label}</label>
+      <label className={`block text-sm font-medium ${ui.textSecondary} mb-1.5`}>{label}</label>
       {children}
     </div>
   );

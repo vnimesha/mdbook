@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ui } from "@/lib/ui";
 
 export default function ReaderProgress() {
   const [pct, setPct] = useState(0);
@@ -17,9 +18,9 @@ export default function ReaderProgress() {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 h-0.5 bg-stone-200 dark:bg-[#1a1a18]">
+    <div className={`fixed top-0 left-0 right-0 z-50 h-0.5 ${ui.accentProgressTrack}`}>
       <div
-        className="h-full bg-blue-600 dark:bg-blue-500 transition-[width] duration-100"
+        className={`h-full ${ui.accentProgress} transition-[width] duration-100`}
         style={{ width: `${pct}%` }}
       />
     </div>

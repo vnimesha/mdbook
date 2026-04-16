@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadChapter, uploadImage } from "@/lib/api";
+import { ui } from "@/lib/ui";
 
 const IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".avif"]);
 
@@ -103,7 +104,7 @@ export default function AddChapterButton({ bookId }: { bookId: string }) {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-50 transition-colors"
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg ${ui.btnOutline} disabled:opacity-50`}
         >
           {uploading ? (
             <span className="animate-pulse">Uploading…</span>
@@ -115,7 +116,7 @@ export default function AddChapterButton({ bookId }: { bookId: string }) {
         {!uploading && (
           <button
             onClick={() => folderInputRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg ${ui.btnOutline}`}
             title="Upload a folder containing .md/.mdx files and images"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

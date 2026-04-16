@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ui } from "@/lib/ui";
 
 interface ActiveSection {
   text: string;
@@ -68,13 +69,13 @@ export default function ReaderHeader({
   const showSection = active !== null && active.text !== chapterTitle;
 
   return (
-    <header className="sticky top-0.5 z-40 backdrop-blur-sm border-b border-stone-200 dark:border-[#141413] bg-white/95 dark:bg-[#1F1E1C]/95">
+    <header className={`sticky top-0.5 z-40 border-b ${ui.readerHeaderBorder} ${ui.readerHeaderBg}`}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
 
         {/* ── Left: back to book ── */}
         <Link
           href={`/books/${bookId}`}
-          className="shrink-0 flex items-center gap-1 text-sm text-stone-400 dark:text-stone-400 hover:text-stone-700 dark:hover:text-white transition-colors"
+          className={`shrink-0 flex items-center gap-1 text-sm ${ui.textFaint} hover:${ui.textSecondary} transition-colors`}
           style={{ fontFamily: "var(--font-sans)" }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -84,7 +85,7 @@ export default function ReaderHeader({
         </Link>
 
         {/* ── Divider ── */}
-        <span className="shrink-0 text-stone-200 dark:text-stone-700 select-none" aria-hidden>│</span>
+        <span className={`shrink-0 ${ui.breadcrumbDivider} select-none`} aria-hidden>│</span>
 
         {/* ── Centre: breadcrumb (chapter › section) ── */}
         <div
@@ -95,8 +96,8 @@ export default function ReaderHeader({
           <span
             className={`text-sm truncate transition-colors ${
               showSection
-                ? "text-stone-400 dark:text-stone-500 shrink"
-                : "text-stone-700 dark:text-stone-200 font-medium"
+                ? `${ui.breadcrumbDimmed} shrink`
+                : `${ui.breadcrumbNormal} font-medium`
             }`}
           >
             {chapterTitle}
@@ -106,7 +107,7 @@ export default function ReaderHeader({
           {showSection && (
             <>
               <svg
-                className="shrink-0 text-stone-300 dark:text-stone-600"
+                className={`shrink-0 ${ui.breadcrumbDivider}`}
                 width="14"
                 height="14"
                 viewBox="0 0 24 24"
@@ -119,10 +120,10 @@ export default function ReaderHeader({
               <span
                 className={`text-sm font-medium truncate transition-all ${
                   active!.level === 1
-                    ? "text-stone-800 dark:text-white"
+                    ? ui.breadcrumbH1
                     : active!.level === 2
-                    ? "text-stone-700 dark:text-stone-200"
-                    : "text-stone-600 dark:text-stone-300"
+                    ? ui.breadcrumbH2
+                    : ui.breadcrumbH3
                 }`}
               >
                 {active!.text}
@@ -132,11 +133,11 @@ export default function ReaderHeader({
         </div>
 
         {/* ── Divider ── */}
-        <span className="shrink-0 text-stone-200 dark:text-stone-800 select-none" aria-hidden>│</span>
+        <span className={`shrink-0 ${ui.breadcrumbRule} select-none`} aria-hidden>│</span>
 
         {/* ── Right: chapter position ── */}
         <span
-          className="shrink-0 text-xs tabular-nums text-stone-400 dark:text-stone-400"
+          className={`shrink-0 text-xs tabular-nums ${ui.textFaint}`}
           style={{ fontFamily: "var(--font-sans)" }}
         >
           Ch.&thinsp;{currentIndex + 1}&thinsp;/&thinsp;{totalChapters}
