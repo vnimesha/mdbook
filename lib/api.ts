@@ -1,6 +1,13 @@
 import type { BookMeta, BookSummary, ChapterContent, ChapterMeta, CreateBookPayload } from "./types";
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000";
+// BACKEND_URL (server-only, not exposed to client JS) is preferred for SSR so
+// Next.js containers can reach the backend via the Docker internal network
+// (e.g. http://backend:8000). Client-side code falls back to the public URL
+// baked in at build time via NEXT_PUBLIC_BACKEND_URL.
+const BACKEND =
+  process.env.BACKEND_URL ??
+  process.env.NEXT_PUBLIC_BACKEND_URL ??
+  "http://localhost:8000";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BACKEND}${path}`, {

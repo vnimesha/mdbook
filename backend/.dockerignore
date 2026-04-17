@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Data is mounted as a Docker volume at runtime — don't bake it into the image
+data/
+
+.env
+.git

@@ -26,7 +26,36 @@ A production-grade digital book reader built with **Next.js 16** (frontend) and 
 
 ## Getting Started
 
-### Windows (recommended)
+### Docker (recommended)
+
+Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+```bash
+docker compose up --build
+```
+
+- Frontend → [http://localhost:3000](http://localhost:3000)
+- Backend API → [http://localhost:8000](http://localhost:8000)
+- Swagger docs → [http://localhost:8000/docs](http://localhost:8000/docs)
+
+Book data persists in a named Docker volume (`bookdata`) across restarts. To wipe it:
+
+```bash
+docker compose down -v
+```
+
+**Deploying on a remote host?** Pass your host address as a build arg so client-side JS calls the right URL:
+
+```bash
+NEXT_PUBLIC_BACKEND_URL=http://your-host:8000 docker compose up --build
+# or
+docker compose build --build-arg NEXT_PUBLIC_BACKEND_URL=http://your-host:8000
+docker compose up
+```
+
+---
+
+### Windows (local dev)
 
 Double-click **`launch.bat`** — it will:
 1. Create a Python virtual environment and install backend deps

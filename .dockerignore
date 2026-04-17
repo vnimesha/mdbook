@@ -1,0 +1,13 @@
+node_modules
+.next
+.env*.local
+*.log
+npm-debug.log*
+
+# Backend has its own Dockerfile; don't copy it into the frontend image
+backend/
+
+# Dev tooling
+launch.bat
+.git
+.gitignore
