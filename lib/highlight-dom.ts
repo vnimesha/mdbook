@@ -77,11 +77,17 @@ export function injectMark(
     if (localStart >= localEnd) continue;
 
     const text = node.textContent ?? "";
+    const middle = text.slice(localStart, localEnd);
+
+    // Skip whitespace-only spans — wrapping \n between block elements in an
+    // inline <mark> creates an anonymous block and adds unwanted vertical space.
+    if (!middle.trim()) continue;
+
     const mark = document.createElement("mark");
     mark.setAttribute("data-hl-id", h.id);
     mark.setAttribute("data-hl-color", h.color);
     mark.style.cssText = `background:${HIGHLIGHT_COLORS[h.color]};border-radius:2px;cursor:pointer;padding:0 1px;`;
-    mark.textContent = text.slice(localStart, localEnd);
+    mark.textContent = middle;
 
     const frag = document.createDocumentFragment();
     const before = text.slice(0, localStart);
