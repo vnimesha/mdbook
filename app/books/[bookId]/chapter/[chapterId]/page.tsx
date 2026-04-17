@@ -12,7 +12,8 @@ import ReaderProgress from "./ReaderProgress";
 import ReaderHeader from "./ReaderHeader";
 import PageNav from "./PageNav";
 import ReadingTracker from "./ReadingTracker";
-import BookmarkMenu from "./BookmarkMenu";
+import ReaderControls from "./ReaderControls";
+import HighlightLayer from "./HighlightLayer";
 import { paginate } from "@/lib/paginate";
 import { ui } from "@/lib/ui";
 
@@ -98,7 +99,7 @@ export default async function ChapterPage({ params, searchParams }: Props) {
         pageCount={pages.length}
         pageTitle={page.title}
         rightSlot={
-          <BookmarkMenu
+          <ReaderControls
             bookId={bookId}
             chapterId={chapterId}
             chapterTitle={chapter.meta.title}
@@ -114,6 +115,15 @@ export default async function ChapterPage({ params, searchParams }: Props) {
         currentPage={currentPage}
         pageCount={pages.length}
       />
+
+      {/* Positioned ancestor for selection toolbar / note popups */}
+      <div className="relative">
+        <HighlightLayer
+          bookId={bookId}
+          chapterId={chapterId}
+          page={currentPage}
+        />
+      </div>
 
       <div className="flex-1 flex">
         {/* TOC sidebar */}
@@ -223,7 +233,7 @@ export default async function ChapterPage({ params, searchParams }: Props) {
               </h1>
             </header>
 
-            <div className="prose-book">
+            <div className="prose-book" style={{ fontSize: "var(--reader-font-size, 1rem)" }}>
               <MDXRemote source={stripLeadingHeading(page.content)} options={mdxOptions} />
             </div>
 
