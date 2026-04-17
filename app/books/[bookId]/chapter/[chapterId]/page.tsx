@@ -2,8 +2,10 @@ import { getBook, getChapter } from "@/lib/api";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import rehypeSlug from "rehype-slug";
 import rehypeHighlight from "rehype-highlight";
+import rehypeKatex from "rehype-katex";
 import Link from "next/link";
 import type { ChapterMeta } from "@/lib/types";
 import ReaderProgress from "./ReaderProgress";
@@ -19,8 +21,8 @@ interface Props {
 
 const mdxOptions = {
   mdxOptions: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypeSlug, rehypeHighlight],
+    remarkPlugins: [remarkGfm, remarkMath],
+    rehypePlugins: [rehypeSlug, rehypeHighlight, rehypeKatex],
   },
 };
 

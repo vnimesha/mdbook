@@ -1,0 +1,20 @@
+{
+  "id": "7a55a92e-1f9b-4df7-b700-b4e640f1fbc4",
+  "title": "Linear Algebra",
+  "author": "Vihanga",
+  "description": "",
+  "cover_color": "#1a1a2e",
+  "tags": [],
+  "chapters": [
+    {
+      "id": "3b987554-c584-4be1-b83a-3428ea94602b",
+      "title": "Linear Algebra Tutorial",
+      "filename": "3b987554-c584-4be1-b83a-3428ea94602b.md",
+      "order": 0,
+      "word_count": 8473,
+      "created_at": "2026-04-16T09:06:39.866745+00:00"
+    }
+  ],
+  "created_at": "2026-04-16T09:06:11.010694+00:00",
+  "updated_at": "2026-04-16T09:06:39.866793+00:00"
+}
