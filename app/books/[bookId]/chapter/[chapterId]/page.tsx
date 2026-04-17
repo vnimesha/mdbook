@@ -37,6 +37,20 @@ function parsePage(raw: string | string[] | undefined, pageCount: number): numbe
   return Math.max(1, Math.min(n, pageCount));
 }
 
+function stripLeadingHeading(md: string): string {
+  // Drop the first line if it's an H1 or H2 — its text is already shown as the page title.
+  const lines = md.split("\n");
+  let i = 0;
+  while (i < lines.length && lines[i].trim() === "") i++;
+  if (i < lines.length && /^#{1,2}\s+/.test(lines[i])) {
+    lines.splice(i, 1);
+    while (i < lines.length && lines[i].trim() === "") {
+      lines.splice(i, 1);
+    }
+  }
+  return lines.join("\n");
+}
+
 async function pageCountFor(bookId: string, chapter: ChapterMeta | undefined | null): Promise<number> {
   if (!chapter) return 1;
   try {
@@ -82,6 +96,7 @@ export default async function ChapterPage({ params, searchParams }: Props) {
         totalChapters={sortedChapters.length}
         currentPage={currentPage}
         pageCount={pages.length}
+        pageTitle={page.title}
         rightSlot={
           <BookmarkMenu
             bookId={bookId}
@@ -186,7 +201,7 @@ export default async function ChapterPage({ params, searchParams }: Props) {
                 className={`text-xs font-semibold uppercase tracking-[0.2em] ${ui.textFaint} mb-4`}
                 style={{ fontFamily: "var(--font-sans)" }}
               >
-                Chapter {currentIndex + 1}
+                {chapter.meta.title}
                 {pages.length > 1 && (
                   <>
                     <span className="mx-2" aria-hidden>·</span>
@@ -204,24 +219,12 @@ export default async function ChapterPage({ params, searchParams }: Props) {
                   borderBottom: "2px solid var(--prose-rule-color)",
                 }}
               >
-                {chapter.meta.title}
+                {page.title}
               </h1>
-              <div
-                className="flex items-center gap-3 pt-3 pb-8"
-                style={{ fontFamily: "var(--font-sans)" }}
-              >
-                <span className={`text-xs ${ui.textFaint}`}>
-                  {chapter.meta.word_count.toLocaleString()} words
-                </span>
-                <span className={ui.breadcrumbDivider}>·</span>
-                <span className={`text-xs ${ui.textFaint}`}>
-                  ~{Math.max(1, Math.round(chapter.meta.word_count / 250))} min read
-                </span>
-              </div>
             </header>
 
             <div className="prose-book">
-              <MDXRemote source={page.content} options={mdxOptions} />
+              <MDXRemote source={stripLeadingHeading(page.content)} options={mdxOptions} />
             </div>
 
             <PageNav

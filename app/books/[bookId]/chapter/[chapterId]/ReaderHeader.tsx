@@ -17,6 +17,7 @@ interface Props {
   totalChapters: number;
   currentPage?: number;
   pageCount?: number;
+  pageTitle?: string;
   rightSlot?: ReactNode;
 }
 
@@ -28,6 +29,7 @@ export default function ReaderHeader({
   totalChapters,
   currentPage,
   pageCount,
+  pageTitle,
   rightSlot,
 }: Props) {
   const [active, setActive] = useState<ActiveSection | null>(null);
@@ -52,13 +54,12 @@ export default function ReaderHeader({
         }
       }
       setActive((prev) => {
-        // avoid re-renders when nothing changed
         if (prev?.text === current?.text) return prev;
         return current;
       });
     };
 
-    // Small delay so MDX is rendered before we collect headings
+    // Re-collect when page changes (URL updated, new MDX in DOM)
     const timer = setTimeout(() => {
       collect();
       update();
@@ -69,10 +70,13 @@ export default function ReaderHeader({
       clearTimeout(timer);
       window.removeEventListener("scroll", update);
     };
-  }, []);
+  }, [currentPage, pageTitle]);
 
-  // Active section is different from the chapter title when scrolled into a sub-heading
-  const showSection = active !== null && active.text !== chapterTitle;
+  // Breadcrumb shows the page title; scrolling into an H2/H3 appends the subsection.
+  // Skip showing "active" when it equals the page's own leading heading (redundant).
+  const primaryTitle = pageTitle || chapterTitle;
+  const showSection =
+    active !== null && active.text !== primaryTitle && active.text !== chapterTitle;
 
   return (
     <header className={`sticky top-0.5 z-40 border-b ${ui.readerHeaderBorder} ${ui.readerHeaderBg}`}>
@@ -98,7 +102,7 @@ export default function ReaderHeader({
           className="flex-1 min-w-0 flex items-center gap-1.5 overflow-hidden"
           style={{ fontFamily: "var(--font-sans)" }}
         >
-          {/* Chapter title */}
+          {/* Page / lesson title */}
           <span
             className={`text-sm truncate transition-colors ${
               showSection
@@ -106,7 +110,7 @@ export default function ReaderHeader({
                 : `${ui.breadcrumbNormal} font-medium`
             }`}
           >
-            {chapterTitle}
+            {primaryTitle}
           </span>
 
           {/* Section separator + name */}
