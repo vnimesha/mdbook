@@ -10,13 +10,17 @@ import Link from "next/link";
 import type { ChapterMeta } from "@/lib/types";
 import ReaderProgress from "./ReaderProgress";
 import ReaderHeader from "./ReaderHeader";
-import ChapterNav from "./ChapterNav";
+import PageNav from "./PageNav";
+import ReadingTracker from "./ReadingTracker";
+import BookmarkMenu from "./BookmarkMenu";
+import { paginate } from "@/lib/paginate";
 import { ui } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ bookId: string; chapterId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const mdxOptions = {
@@ -26,8 +30,26 @@ const mdxOptions = {
   },
 };
 
-export default async function ChapterPage({ params }: Props) {
+function parsePage(raw: string | string[] | undefined, pageCount: number): number {
+  const str = Array.isArray(raw) ? raw[0] : raw;
+  const n = str ? parseInt(str, 10) : NaN;
+  if (Number.isNaN(n)) return 1;
+  return Math.max(1, Math.min(n, pageCount));
+}
+
+async function pageCountFor(bookId: string, chapter: ChapterMeta | undefined | null): Promise<number> {
+  if (!chapter) return 1;
+  try {
+    const c = await getChapter(bookId, chapter.id);
+    return paginate(c.content).length;
+  } catch {
+    return 1;
+  }
+}
+
+export default async function ChapterPage({ params, searchParams }: Props) {
   const { bookId, chapterId } = await params;
+  const sp = await searchParams;
 
   let book, chapter;
   try {
@@ -42,6 +64,12 @@ export default async function ChapterPage({ params }: Props) {
   const nextChapter =
     currentIndex < sortedChapters.length - 1 ? sortedChapters[currentIndex + 1] : null;
 
+  const pages = paginate(chapter.content);
+  const currentPage = parsePage(sp.page, pages.length);
+  const page = pages[currentPage - 1];
+  const pageTitles = pages.map((p) => p.title);
+  const prevChapterPageCount = await pageCountFor(bookId, prevChapter);
+
   return (
     <div className={`min-h-screen ${ui.readerBg} flex flex-col`}>
       <ReaderProgress />
@@ -52,6 +80,24 @@ export default async function ChapterPage({ params }: Props) {
         chapterTitle={chapter.meta.title}
         currentIndex={currentIndex}
         totalChapters={sortedChapters.length}
+        currentPage={currentPage}
+        pageCount={pages.length}
+        rightSlot={
+          <BookmarkMenu
+            bookId={bookId}
+            chapterId={chapterId}
+            chapterTitle={chapter.meta.title}
+            currentPage={currentPage}
+            pageTitles={pageTitles}
+          />
+        }
+      />
+
+      <ReadingTracker
+        bookId={bookId}
+        chapterId={chapterId}
+        currentPage={currentPage}
+        pageCount={pages.length}
       />
 
       <div className="flex-1 flex">
@@ -71,7 +117,6 @@ export default async function ChapterPage({ params }: Props) {
                 const isActive = c.id === chapterId;
                 return (
                   <li key={c.id}>
-                    {/* Separator line above each item except the first */}
                     {i > 0 && (
                       <div className={`mx-5 border-t ${ui.sidebarSep}`} />
                     )}
@@ -81,7 +126,6 @@ export default async function ChapterPage({ params }: Props) {
                         isActive ? ui.sidebarItemActive : ui.sidebarItemInactive
                       }`}
                     >
-                      {/* Number badge — fixed width so text never shifts */}
                       <span
                         className={`shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center rounded text-[0.65rem] font-semibold leading-none transition-colors ${
                           isActive ? ui.sidebarBadgeActive : ui.sidebarBadgeInactive
@@ -96,19 +140,59 @@ export default async function ChapterPage({ params }: Props) {
               })}
             </ol>
           </nav>
+
+          {/* Pages within current chapter */}
+          {pages.length > 1 && (
+            <div className={`mt-4 pt-4 border-t ${ui.sidebarSep}`}>
+              <p
+                className={`px-5 pb-2 text-[0.65rem] font-semibold uppercase tracking-[0.15em] ${ui.sidebarLabel}`}
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                Pages
+              </p>
+              <ol>
+                {pages.map((p) => {
+                  const isActive = p.index + 1 === currentPage;
+                  return (
+                    <li key={p.anchor}>
+                      <Link
+                        href={`/books/${bookId}/chapter/${chapterId}?page=${p.index + 1}`}
+                        className={`flex items-start gap-2.5 px-5 py-2 text-xs font-medium transition-colors ${
+                          isActive ? ui.sidebarItemActive : ui.sidebarItemInactive
+                        }`}
+                      >
+                        <span
+                          className={`shrink-0 w-5 h-5 flex items-center justify-center rounded text-[0.65rem] font-semibold leading-none transition-colors ${
+                            isActive ? ui.sidebarBadgeActive : ui.sidebarBadgeInactive
+                          }`}
+                        >
+                          {p.index + 1}
+                        </span>
+                        <span className="leading-snug truncate">{p.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          )}
         </aside>
 
         {/* Reader */}
         <main className="flex-1 min-w-0 px-4 sm:px-10 lg:px-16 py-14">
           <article className="mx-auto" style={{ maxWidth: "90ch" }}>
-            {/* Chapter header */}
             <header className="mb-10">
-              {/* Chapter label — typeset like a textbook section label */}
               <p
                 className={`text-xs font-semibold uppercase tracking-[0.2em] ${ui.textFaint} mb-4`}
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 Chapter {currentIndex + 1}
+                {pages.length > 1 && (
+                  <>
+                    <span className="mx-2" aria-hidden>·</span>
+                    Page {currentPage} of {pages.length}
+                  </>
+                )}
               </p>
               <h1
                 className="text-3xl md:text-[2.25rem] font-bold leading-tight mb-0"
@@ -136,13 +220,20 @@ export default async function ChapterPage({ params }: Props) {
               </div>
             </header>
 
-            {/* MDX content */}
             <div className="prose-book">
-              <MDXRemote source={chapter.content} options={mdxOptions} />
+              <MDXRemote source={page.content} options={mdxOptions} />
             </div>
 
-            {/* Chapter navigation */}
-            <ChapterNav bookId={bookId} prev={prevChapter} next={nextChapter} />
+            <PageNav
+              bookId={bookId}
+              chapterId={chapterId}
+              chapter={chapter.meta}
+              prevChapter={prevChapter}
+              nextChapter={nextChapter}
+              currentPage={currentPage}
+              pageTitles={pageTitles}
+              prevChapterPageCount={prevChapterPageCount}
+            />
           </article>
         </main>
       </div>

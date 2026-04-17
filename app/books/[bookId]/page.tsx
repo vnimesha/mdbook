@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import DeleteBookButton from "./DeleteBookButton";
 import AddChapterButton from "./AddChapterButton";
 import DeleteChapterButton from "./DeleteChapterButton";
+import ContinueReadingButton from "./ContinueReadingButton";
 import { ui } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
@@ -157,13 +158,12 @@ export default async function BookPage({ params }: Props) {
           {/* Sidebar */}
           <div className="lg:w-56 shrink-0 space-y-4">
             {firstChapter && (
-              <Link
-                href={`/books/${book.id}/chapter/${firstChapter.id}`}
-                className="block w-full text-center py-3 rounded-xl font-semibold text-white transition-colors"
-                style={{ backgroundColor: book.cover_color }}
-              >
-                Start Reading →
-              </Link>
+              <ContinueReadingButton
+                bookId={book.id}
+                chapters={sortedChapters.map((c) => ({ id: c.id, title: c.title }))}
+                coverColor={book.cover_color}
+                firstChapterId={firstChapter.id}
+              />
             )}
             <DeleteBookButton bookId={book.id} />
           </div>

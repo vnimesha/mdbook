@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ui } from "@/lib/ui";
 
 interface ActiveSection {
@@ -15,6 +15,9 @@ interface Props {
   chapterTitle: string;
   currentIndex: number;
   totalChapters: number;
+  currentPage?: number;
+  pageCount?: number;
+  rightSlot?: ReactNode;
 }
 
 export default function ReaderHeader({
@@ -23,6 +26,9 @@ export default function ReaderHeader({
   chapterTitle,
   currentIndex,
   totalChapters,
+  currentPage,
+  pageCount,
+  rightSlot,
 }: Props) {
   const [active, setActive] = useState<ActiveSection | null>(null);
   // Keep a ref so the scroll handler always reads the latest headings
@@ -135,13 +141,26 @@ export default function ReaderHeader({
         {/* ── Divider ── */}
         <span className={`shrink-0 ${ui.breadcrumbRule} select-none`} aria-hidden>│</span>
 
-        {/* ── Right: chapter position ── */}
+        {/* ── Right: chapter + page position ── */}
         <span
           className={`shrink-0 text-xs tabular-nums ${ui.textFaint}`}
           style={{ fontFamily: "var(--font-sans)" }}
         >
           Ch.&thinsp;{currentIndex + 1}&thinsp;/&thinsp;{totalChapters}
+          {currentPage !== undefined && pageCount !== undefined && pageCount > 1 && (
+            <>
+              <span className="mx-1.5" aria-hidden>·</span>
+              p.&thinsp;{currentPage}&thinsp;/&thinsp;{pageCount}
+            </>
+          )}
         </span>
+
+        {rightSlot && (
+          <>
+            <span className={`shrink-0 ${ui.breadcrumbRule} select-none`} aria-hidden>│</span>
+            {rightSlot}
+          </>
+        )}
       </div>
     </header>
   );
